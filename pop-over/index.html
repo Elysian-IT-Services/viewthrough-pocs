@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pop-over — small corner window that closes itself</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>Pop-over (corner window)</h1>
+  <p>Simulated lander. Accepting consent opens the affiliate link in a <strong><span data-popup-size></span> window in the bottom-right corner</strong>. It loads <span data-op="label"></span> top-level and closes itself once the redirect, the landing page and the operator's own beacon have had time to run.</p>
+
+  <div class="verdict">
+    <strong>Same attribution as the pop-under, a different interruption.</strong> The corner window is a real top-level page and <em>not</em> a frame, so <span data-op="label"></span> writes its first-party <span data-op="cookieList"></span> exactly as it would in a normal tab. It does appear in front — no browser lets a page send a window it just opened behind itself — but at <span data-popup-size></span> in the corner that is a small window appearing, not a full-screen takeover. <strong>On phones the size is ignored</strong> and you get a full tab, so this is a desktop improvement only.
+  </div>
+
+  <a id="banner" class="banner" data-op-link data-op="bannerCopy" target="_blank" rel="noopener" hidden></a>
+
+  <p>
+    <label for="closeDelay">Close the window after</label>
+    <input id="closeDelay" type="number" min="0" max="20000" step="50" style="font: inherit; width: 90px; padding: 6px;"> ms
+    <span class="muted">— 0 keeps it open. Change it, press Reset, then accept consent again.</span>
+  </p>
+
+  <pre id="status" role="status" aria-live="polite">Ready. Nothing has fired.</pre>
+
+  <p>
+    <a class="cta" data-op-link data-op="visitCta" target="_blank" rel="noopener"></a>
+    <button id="reset" type="button">Reset</button>
+  </p>
+
+  <h2>Verify</h2>
+  <ol>
+    <li>A small window opens in the bottom-right and closes itself; the status log goes <code>fired → waiting → closed</code>, and the closing line prints exactly how many ms the window was alive.</li>
+    <li>Before it closes, in that window: Network → <strong>301</strong> from <code data-op="clickHost"></code> → <code data-op="landingUrl"></code> → <strong>200</strong>, top-level. Application → Cookies → <code data-op="cookieOrigin"></code>: first-party <code data-op="cookieList"></code>.</li>
+    <li>Note what the lander did while that happened: did focus come back to you, and was the corner window small enough to ignore? That is the whole point of this variant.</li>
+    <li>Status says <code>still-open</code> → the browser refused to close the window; close it yourself and note which browser. Status says <code>blocked</code> → <code>window.open</code> was refused (expected in Meta's in-app browser) and the explicit click-through still works.</li>
+    <li><strong>The decisive test:</strong> let it close, then complete a test registration and confirm it still attributes in <span data-op="reporting"></span> — i.e. closing the window did not drop the credit.</li>
+  </ol>
+
+  <h2>Finding the shortest delay that still attributes</h2>
+  <p>A page cannot see a cross-origin window finish loading, so the delay is the one number that has to be found by hand. It takes one sitting, here on this page:</p>
+  <ol>
+    <li>Set the delay to <strong>0</strong>, press Reset, accept consent. The window stays open.</li>
+    <li>In <em>that</em> window open DevTools → Application → Cookies → <code data-op="cookieOrigin"></code> and watch for <code data-op="attributionCookie"></code>. Its Network tab gives you the same answer: the row for <span data-op="beacon"></span> finishing is the moment attribution is recorded.</li>
+    <li>Compare that against the <code>fired</code> timestamp in the status log below. The gap is your floor.</li>
+    <li>Put the floor plus a small margin in the box, press Reset, run again, and confirm the cookie is present before the window closes. Halve the margin and repeat until it stops working — the last value that worked is the answer.</li>
+    <li>Put that number in <code>POPUP_CLOSE_AFTER_OPEN_MS</code> in <code>core/constants/index.js</code> so every run starts there, then redo it once on a throttled connection. The floor on Fast 3G is not the floor on your desk.</li>
+  </ol>
+
+  <div id="consent" class="consent">
+    <strong>Marketing consent</strong> — we use partner cookies to credit offers you engage with.
+    <button type="button">Accept</button>
+  </div>
+
+  <script type="module" src="./pop-over.js"></script>
+</body>
+</html>

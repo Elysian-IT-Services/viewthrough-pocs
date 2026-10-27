@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User gesture</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>User gesture</h1>
+
+  <p>This POC tests how long a click keeps the right to open a window. It worked: calling <code>window.open</code> straight away inside the click handler is allowed, and the same call made a second and a half later is blocked by the popup blocker, because the activation the click granted has already expired. Every pop-under POC in this repo depends on that first case, which is why they all open the window before doing anything else.</p>
+
+  <h2>How to test</h2>
+  <ol>
+    <li>Press <strong>Open immediately</strong>. Expect a small window on example.com and the log below to say the window opened.</li>
+    <li>Close that window and press <strong>Open after a delay</strong>. Expect no window, and the log to say the popup blocker stopped it.</li>
+    <li>Look at the browser's address bar for the blocked-popup icon. Chrome and Firefox both show one after the second test.</li>
+    <li>If your browser allowed the delayed window too, check whether you have popups allowed for localhost, then try again in a fresh profile.</li>
+  </ol>
+
+  <p>
+    <button id="immediate" type="button">Open immediately</button>
+    <button id="delayed" type="button">Open after a delay</button>
+  </p>
+
+  <pre id="status" role="status" aria-live="polite">Ready.</pre>
+
+  <script type="module" src="./user-gesture.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pop-under — the operator loads in the tab behind you</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>Pop-under</h1>
+  <p>Simulated lander. Accepting consent opens a <em>copy of this lander</em> in a new tab — the one you keep looking at — and sends <em>this</em> tab to the affiliate link, so <span data-op="label"></span> loads top-level in the tab behind you.</p>
+
+  <div class="verdict">
+    <strong>The only no-operator option that stays quiet even when the browser forces tabs.</strong> Window sizing is ignored on browsers set to "prefer tabs", so a popup becomes a full-screen tab. This puts YOUR lander in the foreground tab instead and the operator behind it. Real top-level load, so <span data-op="label"></span> sets its first-party <span data-op="cookieList"></span>. <strong>Cost:</strong> the operator tab lingers — a script can only close a window it opened itself, and this tab navigated. The silent, no-tab option is the iframe, which needs <span data-op="label"></span> to set <span data-op="attributionCookie"></span> as <code>SameSite=None</code>.
+  </div>
+
+  <a id="banner" class="banner" data-op-link data-op="bannerCopy" target="_blank" rel="noopener" hidden></a>
+
+  <pre id="status" role="status" aria-live="polite">Ready. Nothing has fired.</pre>
+
+  <p>
+    <a class="cta" data-op-link data-op="visitCta" target="_blank" rel="noopener"></a>
+    <button id="reset" type="button">Reset</button>
+  </p>
+
+  <h2>Verify</h2>
+  <ol>
+    <li>Accept consent: a new tab opens with this lander (status says "resumed") and the original tab goes to the operator behind it.</li>
+    <li>In the original (background) tab: Network → <strong>301</strong> from <code data-op="clickHost"></code> → <code data-op="landingUrl"></code> → <strong>200</strong>. Application → Cookies → <code data-op="cookieOrigin"></code>: first-party <code data-op="cookieList"></code>.</li>
+    <li>Confirm you stayed on the lander the whole time — no full-screen operator page.</li>
+    <li><strong>Decisive test:</strong> clear the operator cookies, complete a test registration, and confirm it attributes in <span data-op="reporting"></span>.</li>
+  </ol>
+
+  <div id="consent" class="consent">
+    <strong>Marketing consent</strong> — we use partner cookies to credit offers you engage with.
+    <button type="button">Accept</button>
+  </div>
+
+  <script type="module" src="./pop-under.js"></script>
+</body>
+</html>

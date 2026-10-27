@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "VTA attribution helper (POC)",
+  "version": "1.0.0",
+  "description": "Operator-approved POC: opens a consented affiliate click top-level in a background tab, verifies the attribution cookie landed, and keeps it.",
+  "permissions": ["storage", "cookies"],
+  "host_permissions": [
+    "https://record.revenuenetwork.com/*",
+    "https://*.slots.lv/*",
+    "https://go.thunder.partners/*",
+    "http://localhost:4100/*"
+  ],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "content_scripts": [
+    {
+      "matches": ["http://localhost:4100/browser-extension/demo/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    { "resources": ["config.js", "operators.js"], "matches": ["http://localhost:4100/*"] }
+  ],
+  "action": { "default_popup": "popup.html", "default_title": "VTA attribution proof" }
+}

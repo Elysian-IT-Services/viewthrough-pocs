@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top-level vs iframe — cookie proof</title>
+  <style>
+    :root { --ok: #1f8a4c; --bad: #ff3b30; }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 24px; background: #f5f5f7; color: #1a1a1a; }
+    .wrap { max-width: 1200px; margin: 0 auto; }
+    h1 { margin: 0 0 6px; }
+    .lead { color: #444; margin: 0 0 18px; max-width: 80ch; }
+    .urlbar { background: #fff; border: 1px solid #e5e5ea; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; font-size: 14px; }
+    code { background: #f1f1f4; padding: 2px 6px; border-radius: 4px; word-break: break-all; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .col { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,.06); border-top: 6px solid; }
+    .col.top { border-color: var(--ok); }
+    .col.frame { border-color: var(--bad); }
+    .tag { display: inline-block; font-weight: 700; font-size: 13px; padding: 3px 10px; border-radius: 999px; color: #fff; margin-bottom: 8px; }
+    .top .tag { background: var(--ok); }
+    .frame .tag { background: var(--bad); }
+    button { font: inherit; font-weight: 600; cursor: pointer; padding: 10px 16px; border-radius: 8px; border: 0; color: #fff; }
+    .top button { background: var(--ok); }
+    .frame button { background: var(--bad); }
+    .expect { font-size: 14px; margin: 10px 0; }
+    .expect b.ok { color: var(--ok); }
+    .expect b.bad { color: var(--bad); }
+    iframe { width: 100%; height: 620px; border: 3px dashed var(--bad); border-radius: 8px; background: #fff; margin-top: 10px; }
+    .how { background: #fff8e6; border-left: 5px solid #f0a500; border-radius: 8px; padding: 14px 16px; margin: 18px 0; font-size: 14px; }
+    ol { margin: 6px 0 0 18px; padding: 0; }
+    li { margin: 4px 0; }
+    .muted { color: #666; font-size: 13px; }
+    .opbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: #1a1a1a; color: #fff; margin: -24px -24px 18px; padding: 10px 20px; font-size: 14px; }
+    .opbar .muted { color: #aaa; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Same URL, two ways — why only the cookie on the left survives</h1>
+    <p class="lead">Both sides load the <b>same</b> <span data-op="network"></span> link, which mints a fresh referral and lands on <code data-op="landingUrl"></code>. The only difference: the left opens it <b>top-level</b> (first-party), the right loads it <b>inside an iframe</b> (third-party). The cookie result is identical to nothing but that difference.</p>
+
+    <div class="urlbar">
+      <b>Source link (mints a fresh referral each time):</b><br>
+      <code id="sourceUrl"></code>
+      <span class="muted">→ 301 → <code data-op="landingUrl"></code></span>
+    </div>
+
+    <div class="grid">
+      <div class="col top">
+        <span class="tag">① TOP-LEVEL · first-party</span>
+        <p class="expect">Opens in a new tab — a real visit. Expected: <b class="ok"><span data-op="cookieList"></span> ARE set</b> on <span data-op="label"></span>.</p>
+        <button id="openTop">Open top-level in a new tab</button>
+        <p class="muted">The tab becomes the operator's own page, so its cookies are first-party and the browser keeps them.</p>
+      </div>
+
+      <div class="col frame">
+        <span class="tag">② IFRAME · third-party</span>
+        <p class="expect">Loads below, inside this page. Expected: <b class="bad"><span data-op="cookieList"></span> are NOT kept</b> (SameSite=Lax, discarded in a frame). Safari/Firefox/in-app keep nothing at all.</p>
+        <button id="loadFrame">Load the same URL in the iframe</button>
+        <div id="frameHost"></div>
+      </div>
+    </div>
+
+    <div class="how">
+      <b>How to read the result (this page cannot show the operator's cookies for you — they are on their domain, not ours):</b>
+      <ol>
+        <li>Open DevTools → <b>Application → Cookies → <code data-op="cookieOrigin"></code></b>. First <b>clear</b> them so you start empty.</li>
+        <li>Click <b>①</b>, let the tab load, re-check cookies: <b style="color:var(--ok)"><span data-op="cookieList"></span> are there.</b></li>
+        <li>Clear the operator cookies again. Click <b>②</b>, let the frame load, re-check: <b style="color:var(--bad)">they are missing</b> (on Chrome only SameSite=None analytics cookies survive; on Safari and Firefox the jar is empty).</li>
+        <li>Same URL, same page — only top-level vs framed differs. That gap is <b>SameSite=Lax + third-party cookie rules</b>, which the removed X-Frame-Options header has nothing to do with.</li>
+      </ol>
+    </div>
+    <p class="muted">The iframe renders when the operator sends no X-Frame-Options / CSP (that lock is open). The cookie still fails because it is a different lock — the operator marking those cookies <code>SameSite=None; Secure</code> is the only thing that opens it.</p>
+  </div>
+
+  <script type="module" src="./cookie-proof.js"></script>
+</body>
+</html>

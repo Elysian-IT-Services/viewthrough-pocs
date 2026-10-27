@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IP spoof relay — abandoned</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>IP spoof relay (abandoned, does not work)</h1>
+
+  <p class="muted">Pinned to <span data-op="operatorAndNetwork"></span> — the operator switcher does not apply here, because this abandoned POC is the only one that sends that operator's bta and placement id.</p>
+
+  <p>This POC asked our own server to call the affiliate <code>/visit/</code> link on the reader's behalf, sending the reader's IP address in <code>X-Forwarded-For</code> and <code>Client-IP</code> headers and copying their <code>User-Agent</code>, so the visit would look like it came from the reader. <strong>It cannot work and the approach was dropped.</strong> Those headers are just text in the request: the TCP connection still comes from our server's IP, and the affiliate's redirect comes back to Node and dies there, so the reader's browser never follows it and never receives an operator cookie.</p>
+
+  <p>The code is kept here on purpose, forged headers and all, so you can see what was tried and why it was abandoned. Nothing links to this page and nothing runs until you press the button.</p>
+
+  <h2>How to test</h2>
+  <ol>
+    <li>Press <strong>Run the abandoned relay once</strong>. The panel below fills in with whatever the server got back.</li>
+    <li>Read <code>operatorLocation</code> in that panel. That is the redirect the affiliate sent, sitting in our JSON as plain text — the browser never went there, which is the whole failure.</li>
+    <li>Open DevTools, go to Application, then Cookies, and look for anything from <span data-op="label"></span>. Expect none: the server received the response, not the browser.</li>
+    <li>Look at the terminal running the server. It prints the IP it forwarded. On a local run that is <code>::1</code>, which tells the affiliate nothing about the reader.</li>
+    <li>Note that <code>success: true</code> is written by our own code for any status from 200 to 399. It is not the operator confirming attribution.</li>
+  </ol>
+
+  <p><button id="run" type="button">Run the abandoned relay once</button></p>
+
+  <pre id="status" role="status" aria-live="polite">Ready. Nothing has fired.</pre>
+
+  <script type="module" src="./ip-spoof-relay.js"></script>
+</body>
+</html>

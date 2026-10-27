@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Navigation flows</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>Navigation flows</h1>
+
+  <p>This POC tests the two original ways of sending a reader through the affiliate link without losing them: <strong>A, the reverse pop-under</strong>, which opens a fresh copy of the publisher page in a new tab and sends the old tab off to the affiliate, and <strong>C, a 400 by 300 popup</strong>, which keeps the reader here and loads the affiliate in a small window. Both deliver a real top-level load, so the operator can set its own cookies, but both still count as a click journey, so neither proves view-through attribution. These two flows are the ancestors of the pop-under and reverse pop-under POCs in this repo.</p>
+
+  <h2>How to test</h2>
+  <ol>
+    <li>Use a fresh browser profile so no earlier referral state is lying around, and leave the normal browser protections on.</li>
+    <li>Set the close delay to 0, then press <strong>A: Reverse pop-under</strong>. Expect this tab to go to the affiliate link and a new publisher tab to appear in front of it.</li>
+    <li>Come back here, set the delay to 0 again and press <strong>C: 400 by 300 popup</strong>. Expect a small window on the affiliate link while this page stays put.</li>
+    <li>In the opened window's DevTools, Network tab, find the operator's token POST, not just the first <code>/visit/</code> redirect, and check Application then Cookies for a first-party cookie on the operator's domain.</li>
+    <li>Copy the AFP from the log below and look for it against a test registration in affiliate reporting. A page that loaded is not credit.</li>
+    <li>Repeat with the delay set to 3 and count the real windows afterwards. The log says <code>unverified</code> whenever the page cannot prove what happened, which is most of the time.</li>
+  </ol>
+
+  <form id="test">
+    <p>
+      <label for="target">Affiliate URL</label>
+      <input id="target" type="url" required style="font: inherit; width: 100%; box-sizing: border-box; padding: 6px;">
+    </p>
+    <p>
+      <label for="delay">Close attempt after</label>
+      <input id="delay" type="number" min="0" max="60" value="3" required style="font: inherit; width: 70px; padding: 6px;"> seconds. Use 0 to leave the window open and read the Network tab.
+    </p>
+    <p>
+      <button type="submit" value="reverse">A: Reverse pop-under</button>
+      <button type="submit" value="popup">C: 400 by 300 popup</button>
+    </p>
+  </form>
+
+  <pre id="status" role="status" aria-live="polite">Ready. Nothing fires on page load.</pre>
+
+  <script type="module" src="./controls.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Banner impression</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>Banner impression</h1>
+
+  <p>This POC loads <span data-op="label"></span>'s real creative straight from their CDN, so the impression is requested by the reader's browser instead of by our server. It half worked: impressions were counted, but they landed under <code>Default</code> rather than our source, the cookie on the response was rejected, and nothing ties the person who saw the banner to a registration later on.</p>
+
+  <h2>How to test</h2>
+  <ol>
+    <li>Open DevTools, go to the Network tab, tick <strong>Disable cache</strong>, then reload this page. A cached image makes no request, so nothing gets counted.</li>
+    <li>Find the request to <code id="creativeHost"></code> in the Network list. Expect status 200.</li>
+    <li>Open that request's <strong>Cookies</strong> tab. Expect a cookie named after the creative id to be listed as blocked — the response carries no <code>SameSite=None; Secure</code>, so the browser drops it on a cross-site image.</li>
+    <li>Open <span data-op="reporting"></span>, find the Media Report and read the <strong>Impressions</strong> column, not Visitors. Expect the count to rise under <code>Default</code>, not under our source.</li>
+    <li>Register a test account afterwards and look for it in the Registrations Report. Expect nothing: no impression was ever linked to a person.</li>
+    <li>Do not click the banner. A click fires the visit URL and adds a second attribution path, which ruins the result.</li>
+  </ol>
+
+  <p><a id="click-through" target="_blank" rel="noopener"><img id="creative" alt="Operator creative" width="800" height="440"></a></p>
+
+  <pre id="status" role="status" aria-live="polite">Pixel: waiting.</pre>
+
+  <script type="module" src="./banner-impression.js"></script>
+</body>
+</html>

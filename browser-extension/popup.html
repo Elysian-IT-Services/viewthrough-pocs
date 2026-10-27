@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>VTA attribution proof</title>
+  <style>
+    body { width: 420px; margin: 0; padding: 16px; font: 13px/1.5 system-ui, sans-serif; color: #1a1a1a; }
+    h1 { font-size: 15px; margin: 0 0 10px; }
+    .kv { display: grid; grid-template-columns: 112px 1fr; gap: 5px 10px; align-items: baseline; }
+    code { background: #f1f3f5; padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+    .pill { display: block; padding: 6px 12px; border-radius: 6px; font-weight: 700; margin: 12px 0; }
+    .pill.ok { background: #dcfce7; color: #166534; }
+    .pill.bad { background: #fee2e2; color: #991b1b; }
+    .muted { color: #666; font-size: 12px; }
+    label { display: block; margin: 10px 0; }
+    button { font: inherit; padding: 6px 12px; cursor: pointer; }
+    hr { border: 0; border-top: 1px solid #e5e7eb; margin: 14px 0; }
+  </style>
+</head>
+<body>
+  <h1>VTA attribution proof</h1>
+  <div id="panel"></div>
+  <hr>
+  <label><input type="checkbox" id="keepTab"> Debug — keep the background tab open (inspect Network / <code>matomo.php</code>)</label>
+  <p class="muted" id="disclosure"></p>
+  <button id="forget" type="button">Forget recorded cookie (stops restoring)</button>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SameSite cookies</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>SameSite cookies</h1>
+
+  <p>This POC asks our own server to set a cookie under <code>SameSite=Strict</code>, <code>Lax</code> and <code>None</code> in turn, so you can see exactly which attributes end up on the stored cookie. It works, but read the result carefully: these requests go to our own origin, so they are same-site and all three policies are accepted. It does not prove anything about the cross-site case, which is the one that actually breaks attribution — for that, see the banner impression POC, where the operator's cookie is rejected on a cross-site response.</p>
+
+  <h2>How to test</h2>
+  <ol>
+    <li>Open DevTools, go to Application, then Cookies, then the entry for this origin, and delete anything named <code>tracking_id</code> so you start clean.</li>
+    <li>Press each of the three buttons in turn, re-reading the cookie list after each. Expect <code>tracking_id</code> to be stored every time, with the SameSite column changing to match the button.</li>
+    <li>Look at the <code>None</code> result specifically. It only stores because browsers treat <code>localhost</code> as secure; on a plain http host that cookie would be dropped for missing <code>Secure</code>.</li>
+    <li>Compare with the banner impression POC, where the same kind of cookie arrives on a cross-site response and the browser refuses it.</li>
+  </ol>
+
+  <p>
+    <button type="button" data-policy="Strict">Set SameSite=Strict</button>
+    <button type="button" data-policy="Lax">Set SameSite=Lax</button>
+    <button type="button" data-policy="None">Set SameSite=None</button>
+  </p>
+
+  <pre id="status" role="status" aria-live="polite">Ready.</pre>
+
+  <script type="module" src="./samesite-cookies.js"></script>
+</body>
+</html>

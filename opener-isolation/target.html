@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Opener isolation — opened tab</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>Opened tab</h1>
+  <p>This is the page the link opened. It checks whether it can still reach the tab that opened it, and if it can, it navigates that tab away.</p>
+
+  <pre id="status" role="status" aria-live="polite">Checking.</pre>
+
+  <script type="module" src="./opener-isolation.js"></script>
+</body>
+</html>

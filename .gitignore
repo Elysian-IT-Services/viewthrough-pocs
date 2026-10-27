@@ -1,0 +1,8 @@
+node_modules/
+
+# Affiliate account identifiers — never commit these.
+.env
+
+# Generated from .env by scripts/write-affiliate-config.js.
+core/constants/affiliate.js
+browser-extension/operators.js

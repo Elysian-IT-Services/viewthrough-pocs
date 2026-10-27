@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vt-poc — attribution POCs</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>Attribution POCs</h1>
+  <p>Every approach we tried to credit an affiliate for a visit. Read README.md first — it explains what each one proved and where we ended up. Every outbound link is tagged with the test click id <code>vtpoc-test-001</code>, so nothing here looks like real traffic.</p>
+
+  <h2>Current approaches</h2>
+  <ul>
+    <li><a href="/cookie-proof/">Cookie proof</a> — the same affiliate link opened top-level and in an iframe, so you can compare the cookies each one keeps.</li>
+    <li><a href="/pop-under/">Pop-under</a> — your lander moves to a new tab and this tab goes to the affiliate link behind it, so the operator loads out of sight. The one that works everywhere.</li>
+    <li><a href="/pop-over/">Pop-over</a> — the affiliate link opens in a small corner window in front, which closes itself once the operator has had time to load.</li>
+    <li><a href="/server-side-click/">Server-side click</a> — the server calls the affiliate link, then the browser loads the URL it minted.</li>
+    <li><a href="/hidden-iframe/">Hidden iframe</a> — the affiliate link loads in an iframe on the lander and the user stays put. Needs an operator cookie change to work.</li>
+    <li><a href="/browser-extension/demo/">Browser extension</a> — an installed extension fires the affiliate click from outside the page.</li>
+  </ul>
+
+  <h2>Earlier attempts, now set aside</h2>
+  <ul>
+    <li><a href="/banner-impression/">Banner impression</a> — load the operator's real creative and hope the impression alone earns credit.</li>
+    <li><a href="/navigation-flows/">Navigation flows</a> — the first versions of the two pop-under ideas, with tests.</li>
+    <li><a href="/ip-spoof-relay/">IP spoof relay</a> — <strong>abandoned, but still runnable.</strong> The server forged the reader's IP and user agent. Run it and watch it fail, so nobody tries this again.</li>
+  </ul>
+
+  <h2>Browser behaviour we had to understand first</h2>
+  <ul>
+    <li><a href="/opener-isolation/">Opener isolation</a> — what a new tab can still do to the page that opened it.</li>
+    <li><a href="/user-gesture/">User gesture</a> — how long a click stays valid for opening a window.</li>
+    <li><a href="/pre-navigation-beacon/">Pre-navigation beacon</a> — finishing a tracking request as the page unloads.</li>
+    <li><a href="/samesite-cookies/">SameSite cookies</a> — which cookie attributes the browser actually stores.</li>
+  </ul>
+</body>
+</html>

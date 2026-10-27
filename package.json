@@ -1,0 +1,24 @@
+{
+  "name": "vt-poc",
+  "private": true,
+  "type": "module",
+  "description": "Attribution POCs served by one small express server.",
+  "scripts": {
+    "setup": "node scripts/write-affiliate-config.js",
+    "prestart": "npm run setup",
+    "start": "node server.js",
+    "pretest": "npm run setup",
+    "test": "node --test navigation-flows/*.test.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0"
+  }
+}

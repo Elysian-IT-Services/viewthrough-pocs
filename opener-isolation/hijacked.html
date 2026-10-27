@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Opener isolation — hijacked tab</title>
+  <link rel="stylesheet" href="/core/lander/styles.css">
+</head>
+<body>
+  <h1>This tab was navigated by the tab it opened</h1>
+  <p>You did not ask for this page. The tab you opened used its <code>window.opener</code> handle to send you here. A real attack would load a convincing copy of the site you were on and ask you to log in again.</p>
+  <p><a href="./index.html">Back to the opener isolation POC</a></p>
+</body>
+</html>
