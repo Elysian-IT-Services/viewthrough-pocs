@@ -1,10 +1,37 @@
-# vt-poc — affiliate attribution experiments
+# viewthrough-pocs — affiliate attribution experiments
 
 Every approach we tried to get an affiliate credited when a reader engages with an ad on our lander,
 without dragging the reader out of their journey.
 
 Each approach lives in its own folder and has its own page with test steps on it. Start the server,
 open the menu, and click through them. This file explains why each one exists and which ones work.
+
+## First run
+
+```
+npm install
+cp .env.example .env     # fill in the values below
+npm start                # http://localhost:4100
+```
+
+`.env` is gitignored and holds the only things not in this repo. Both come from the affiliate
+dashboard under **Marketing Tools**:
+
+| Variable | What it is | Needed for |
+|---|---|---|
+| `<OPERATOR>_URL` | the operator's tracking link — the thing a reader clicks | every POC |
+| `<OPERATOR>_CREATIVE_URL` | the banner image URL | the banner-impression POC only |
+
+`<OPERATOR>` is the operator's key in `core/constants/operators.js`, upper-cased — `slotslv` reads
+`SLOTSLV_URL`. Only the URL is required; `npm run setup` prints which optional values are missing
+and which POCs they affect.
+
+**No dashboard access, or no operator links of your own?** Ask Henry — he can supply both. Nothing
+else is needed to run every POC in here.
+
+Then open <http://localhost:4100> and work down the menu. Start with **cookie-proof**, which shows
+the whole problem in one screen, then **pop-under** and **pop-over** — the two approaches that
+actually attribute. Each page carries its own test steps, and the bar at the top switches operator.
 
 ## The problem
 
@@ -47,16 +74,6 @@ Nothing else in the codebase contains a tracking token or an account id.
 
 If `.env` is missing you get `No .env found. Copy .env.example to .env and fill in your affiliate
 values.` rather than a stack trace.
-
-**Where the values come from.** Both live in the affiliate dashboard under **Marketing Tools**:
-
-- `<KEY>_URL` — the operator's tracking link. If you have no operator links of your own to test
-  with, ask Henry and he will supply one.
-- `<KEY>_CREATIVE_URL` — the banner image URL used by the banner-impression POC. Anyone with
-  dashboard access can copy it from Marketing Tools, or Henry can supply it.
-
-Neither value is committed, and neither is needed to read the code — only to run the POCs against
-a real operator.
 
 One thing `.env` cannot cover: the browser extension's `manifest.json` lists the operator **domains**
 in `host_permissions`, and a manifest is static JSON that cannot read environment variables. The
