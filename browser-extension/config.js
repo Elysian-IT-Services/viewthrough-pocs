@@ -16,10 +16,9 @@ export const STORAGE_KEYS = { lastFire: 'vta:last-fire', keepTab: 'vta:keep-tab'
 export const TAB_STATUS_COMPLETE = 'complete';
 
 export const NAV_TIMEOUT_MS = 20000;
-// How often we look for the operator's attribution cookie while timing it.
 export const COOKIE_POLL_MS = 25;
-// A grace period *after* the tab reports complete, not a budget for the whole load. The page POCs
-// cannot see a cross-origin load at all, which is why their close delay is measured in seconds.
+// A grace period *after* the tab reports complete, not a budget for the whole load. Do not copy
+// this value into the page POCs, which cannot see the load at all.
 export const TAB_CLOSE_MS = 40;
 
 // 'explicit' is left out on purpose: a cookie the user cleared themselves is never replayed.

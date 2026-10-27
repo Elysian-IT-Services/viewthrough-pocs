@@ -8,10 +8,10 @@
 </head>
 <body>
   <h1>Hidden iframe</h1>
-  <p>Simulated lander. Accept consent, then click the banner: the affiliate link loads in an iframe and you stay here. Nothing fires on page load. The iframe is shown below for testing; in production it is hidden.</p>
+  <p>Accept consent, then click the banner: the affiliate link loads in an iframe and you stay here. The frame is shown below for testing; in production it would be hidden.</p>
 
   <div class="verdict warn">
-    <strong>What the end-to-end test proved:</strong> the iframe does load <span data-op="label"></span> and does fire <span data-op="beacon"></span> with the referral — but attribution is tied to <span data-op="attributionCookie"></span> (<code>SameSite=Lax</code>), which <strong>a cross-site iframe cannot persist</strong>. Chrome with third-party cookies allowed kept <strong>0–2</strong> operator cookies and none was the attribution one; with third-party cookies blocked (Safari, iOS, Firefox, in-app) it kept <strong>0</strong>. So this path gives <strong>no</strong> durable view-through today. The fix is on the operator's side — see step 5.
+    <strong>Does not attribute.</strong> The frame loads and the operator's beacon fires, but <span data-op="attributionCookie"></span> is <code>SameSite=Lax</code> and a cross-site frame can never write it. Chrome keeps nothing useful; Safari and Firefox keep nothing at all. One operator-side change fixes it: <code>SameSite=None; Secure</code> on their attribution cookies.
   </div>
 
   <a id="banner" class="banner" data-op-link data-op="bannerCopy" hidden></a>
@@ -25,13 +25,12 @@
 
   <div id="stage"></div>
 
-  <h2>Verify (DevTools: Network with Preserve log, Console, Application → Cookies)</h2>
+  <h2>Test it</h2>
   <ol>
-    <li>Network: <code data-op="clickHost"></code> → <strong>301</strong> → <code data-op="landingUrl"></code> → <strong>200</strong>, inside the iframe.</li>
-    <li>Network: <span data-op="beacon"></span> carrying the referral — that is the operator recording the engagement.</li>
-    <li>Application → Cookies → <code data-op="cookieOrigin"></code>: look for <code data-op="attributionCookie"></code>. On Chrome it is usually absent (Lax, blocked cross-site); on Safari and Firefox the whole jar is empty.</li>
-    <li>New tab → the operator top-level → a <strong>fresh</strong> <code data-op="attributionCookie"></code> appears, unrelated to the iframe's beacon. That mismatch is why view-through breaks.</li>
-    <li><strong>The ask that would make this work on Chrome:</strong> have <span data-op="label"></span> set <code data-op="attributionCookie"></code> (and its session twin) as <code>SameSite=None; Secure</code>, with no <code>Partitioned</code>. Then verify a later registration attributes in <span data-op="reporting"></span>.</li>
+    <li>Clear <code data-op="cookieOrigin"></code> in Application → Cookies, then accept consent and click the banner.</li>
+    <li>Network: <code data-op="clickHost"></code> → <strong>301</strong> → <code data-op="landingUrl"></code> → <strong>200</strong>, inside the frame.</li>
+    <li>Check <code data-op="cookieOrigin"></code>: <code data-op="attributionCookie"></code> is missing. That is the whole finding.</li>
+    <li>Compare with <a href="/pop-over/">pop-over</a>, which loads the same URL top-level and keeps the cookie.</li>
   </ol>
 
   <div id="consent" class="consent">

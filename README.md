@@ -46,7 +46,17 @@ gitignored. `npm start` and `npm test` run `npm run setup` first, which reads `.
 Nothing else in the codebase contains a tracking token or an account id.
 
 If `.env` is missing you get `No .env found. Copy .env.example to .env and fill in your affiliate
-values.` rather than a stack trace. Ask whoever handed you this repo for the real values.
+values.` rather than a stack trace.
+
+**Where the values come from.** Both live in the affiliate dashboard under **Marketing Tools**:
+
+- `<KEY>_URL` — the operator's tracking link. If you have no operator links of your own to test
+  with, ask Henry and he will supply one.
+- `<KEY>_CREATIVE_URL` — the banner image URL used by the banner-impression POC. Anyone with
+  dashboard access can copy it from Marketing Tools, or Henry can supply it.
+
+Neither value is committed, and neither is needed to read the code — only to run the POCs against
+a real operator.
 
 One thing `.env` cannot cover: the browser extension's `manifest.json` lists the operator **domains**
 in `host_permissions`, and a manifest is static JSON that cannot read environment variables. The

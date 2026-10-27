@@ -7,21 +7,21 @@
   <link rel="stylesheet" href="/core/lander/styles.css">
 </head>
 <body>
-  <h1>IP spoof relay (abandoned, does not work)</h1>
+  <h1>IP spoof relay</h1>
+  <p class="muted">Pinned to <span data-op="operatorAndNetwork"></span> — the operator switcher does not apply here.</p>
 
-  <p class="muted">Pinned to <span data-op="operatorAndNetwork"></span> — the operator switcher does not apply here, because this abandoned POC is the only one that sends that operator's bta and placement id.</p>
+  <p>Our server called the affiliate link with the reader's IP and user agent in forged headers, so the visit would look like it came from them.</p>
 
-  <p>This POC asked our own server to call the affiliate <code>/visit/</code> link on the reader's behalf, sending the reader's IP address in <code>X-Forwarded-For</code> and <code>Client-IP</code> headers and copying their <code>User-Agent</code>, so the visit would look like it came from the reader. <strong>It cannot work and the approach was dropped.</strong> Those headers are just text in the request: the TCP connection still comes from our server's IP, and the affiliate's redirect comes back to Node and dies there, so the reader's browser never follows it and never receives an operator cookie.</p>
+  <div class="verdict warn">
+    <strong>Abandoned, and kept runnable so you can watch it fail.</strong> Forged headers are only text: the connection still comes from our server, and the operator's redirect dies in Node instead of reaching the reader's browser.
+  </div>
 
-  <p>The code is kept here on purpose, forged headers and all, so you can see what was tried and why it was abandoned. Nothing links to this page and nothing runs until you press the button.</p>
-
-  <h2>How to test</h2>
+  <h2>Test it</h2>
   <ol>
-    <li>Press <strong>Run the abandoned relay once</strong>. The panel below fills in with whatever the server got back.</li>
-    <li>Read <code>operatorLocation</code> in that panel. That is the redirect the affiliate sent, sitting in our JSON as plain text — the browser never went there, which is the whole failure.</li>
-    <li>Open DevTools, go to Application, then Cookies, and look for anything from <span data-op="label"></span>. Expect none: the server received the response, not the browser.</li>
-    <li>Look at the terminal running the server. It prints the IP it forwarded. On a local run that is <code>::1</code>, which tells the affiliate nothing about the reader.</li>
-    <li>Note that <code>success: true</code> is written by our own code for any status from 200 to 399. It is not the operator confirming attribution.</li>
+    <li>Press the button. The panel fills with whatever the server got back.</li>
+    <li>Read <code>operatorLocation</code>: that redirect sits in our JSON as text — the browser never followed it.</li>
+    <li>Application → Cookies: nothing from <span data-op="label"></span>, because the server got the response, not the browser.</li>
+    <li><code>success: true</code> is written by our own code for any 200–399. It is not the operator confirming anything.</li>
   </ol>
 
   <p><button id="run" type="button">Run the abandoned relay once</button></p>

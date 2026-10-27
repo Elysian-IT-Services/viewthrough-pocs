@@ -45,8 +45,7 @@ function extensionOperator(profile, values) {
   return operator;
 }
 
-// A manifest is static JSON and cannot read .env, so a new operator's hosts have to be added there
-// by hand. This only tells you which ones are missing.
+// A manifest is static JSON and cannot read .env, so new hosts go in by hand. This just says which.
 function warnAboutHostPermissions(profiles) {
   const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8'));
   const hosts = profiles.flatMap((profile) => [profile.clickHost, profile.cookieDomain]).filter(Boolean);

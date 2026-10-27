@@ -14,8 +14,7 @@ function buildOperator(profile) {
 
 export const OPERATORS = OPERATOR_PROFILES.map(buildOperator);
 export const DEFAULT_OPERATOR = 'slotslv';
-// The abandoned relay was only ever wired for Thunder Partners, which is the one operator whose
-// .env values include the bta and placement id it sends.
+// Only this operator's .env values carry the bta and placement id the relay sends.
 export const RELAY_OPERATOR_KEY = 'thunder';
 export const PORT = 4100;
 
@@ -45,9 +44,10 @@ export const DEFAULT_SAMESITE_POLICY = 'Lax';
 export const STORAGE_KEYS = { consent: 'vta:consent', deferredClick: 'vta:deferred-click', operator: 'vta:operator' };
 export const RESUME_PARAM = 'resumed';
 
-export const POPUP_SIZE_PX = 200;
-// A page cannot see a cross-origin window finish loading, so this covers the redirect, the landing
-// page and the operator's cookie write. The box on the pop-over page overrides it per run; 0 leaves
-// the window open.
-export const POPUP_CLOSE_AFTER_OPEN_MS = 1500;
+export const POPUP_SIZE_PX = 120;
+// A page cannot see a cross-origin window finish loading, so this one number covers the redirect,
+// the landing page and the operator's cookie write. The box on the POC page overrides it; 0 keeps it open.
+export const POPUP_CLOSE_AFTER_OPEN_MS = 3000;
 export const POPUP_CLOSE_CHECK_MS = 150;
+// One focus() call loses the race with the window opening, so there is a second attempt this late.
+export const FOCUS_RETRY_MS = 50;

@@ -27,17 +27,24 @@
 </head>
 <body>
   <h1>VTA extension — demo lander</h1>
-  <p>Stand-in for the real lander. Accept marketing consent, then click the banner. The page asks the installed extension to open the affiliate link as a <strong>real top-level navigation in a background tab</strong> — no iframe, no popup, no spoofing. The operator sees an ordinary first-party visit.</p>
+  <p>Accept consent, then click the banner. The page asks the installed extension to open the affiliate link as a real top-level navigation in a background tab. The operator sees an ordinary first-party visit.</p>
 
   <div class="verdict">
-    <strong>What only an extension can do:</strong> prove it worked. After the click it reads the real cookie jar, records the exact <code data-op="attributionCookie"></code> the operator's own script issued, and can replay that same value if the browser later drops it. The toolbar popup shows the recorded ID next to the live one — matching is the attribution proof. It also times the cookie: <strong>"Cookie after" is how many milliseconds the operator actually needed</strong>, which is the smallest close delay the pop-over can safely use.
+    <strong>Only an extension can prove it worked.</strong> It reads the real cookie jar, records the <code data-op="attributionCookie"></code> the operator issued, and shows it next to the live one in the toolbar popup — matching is the proof. <strong>Cookie after</strong> is how long the operator actually took, which is the smallest safe close delay for the pop-over.
   </div>
 
   <div class="verdict warn">
-    <strong>Reach, bluntly:</strong> Chrome and Edge desktop only. Firefox needs manifest changes, Safari needs an Xcode app wrapper, iOS Safari is severely limited, and Meta's in-app browser supports no extensions at all. This traffic is paid Meta ads, so the extension is an add-on for desktop users — <strong>not</strong> a replacement for the click-through or the pop-under.
+    <strong>Chrome and Edge desktop only.</strong> Meta's in-app browser supports no extensions at all, so this is an add-on for desktop readers, not a replacement for the click-through or the pop-under.
   </div>
 
   <p><span id="presence" class="pill bad">✗ Extension not detected — load <code>browser-extension/</code> unpacked, then reload</span></p>
+
+  <h2>Test it</h2>
+  <ol>
+    <li>Pick the operator in the bar, clear that operator's cookies, accept consent, click the banner.</li>
+    <li>The result panel shows the captured cookie and how long it took to appear.</li>
+    <li>Click the extension's toolbar icon: the recorded value and the live one should match.</li>
+  </ol>
   <a id="banner" class="banner" data-op="bannerCopy" hidden></a>
 
   <div id="pill" class="pill" hidden></div>

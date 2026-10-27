@@ -37,11 +37,11 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>Same URL, two ways — why only the cookie on the left survives</h1>
-    <p class="lead">Both sides load the <b>same</b> <span data-op="network"></span> link, which mints a fresh referral and lands on <code data-op="landingUrl"></code>. The only difference: the left opens it <b>top-level</b> (first-party), the right loads it <b>inside an iframe</b> (third-party). The cookie result is identical to nothing but that difference.</p>
+    <h1>Top-level vs iframe</h1>
+    <p class="lead">Both buttons load the <b>same</b> affiliate link. The left opens it top-level, the right loads it in an iframe. Nothing else differs — so whatever the cookie jar does next is caused by that alone.</p>
 
     <div class="urlbar">
-      <b>Source link (mints a fresh referral each time):</b><br>
+      <b>Source link:</b><br>
       <code id="sourceUrl"></code>
       <span class="muted">→ 301 → <code data-op="landingUrl"></code></span>
     </div>
@@ -49,29 +49,26 @@
     <div class="grid">
       <div class="col top">
         <span class="tag">① TOP-LEVEL · first-party</span>
-        <p class="expect">Opens in a new tab — a real visit. Expected: <b class="ok"><span data-op="cookieList"></span> ARE set</b> on <span data-op="label"></span>.</p>
+        <p class="expect">Expected: <b class="ok"><span data-op="cookieList"></span> ARE kept</b>.</p>
         <button id="openTop">Open top-level in a new tab</button>
-        <p class="muted">The tab becomes the operator's own page, so its cookies are first-party and the browser keeps them.</p>
       </div>
 
       <div class="col frame">
         <span class="tag">② IFRAME · third-party</span>
-        <p class="expect">Loads below, inside this page. Expected: <b class="bad"><span data-op="cookieList"></span> are NOT kept</b> (SameSite=Lax, discarded in a frame). Safari/Firefox/in-app keep nothing at all.</p>
+        <p class="expect">Expected: <b class="bad">nothing is kept</b> — <code>SameSite=Lax</code> is dropped in a frame.</p>
         <button id="loadFrame">Load the same URL in the iframe</button>
         <div id="frameHost"></div>
       </div>
     </div>
 
     <div class="how">
-      <b>How to read the result (this page cannot show the operator's cookies for you — they are on their domain, not ours):</b>
+      <b>Test it</b>
       <ol>
-        <li>Open DevTools → <b>Application → Cookies → <code data-op="cookieOrigin"></code></b>. First <b>clear</b> them so you start empty.</li>
-        <li>Click <b>①</b>, let the tab load, re-check cookies: <b style="color:var(--ok)"><span data-op="cookieList"></span> are there.</b></li>
-        <li>Clear the operator cookies again. Click <b>②</b>, let the frame load, re-check: <b style="color:var(--bad)">they are missing</b> (on Chrome only SameSite=None analytics cookies survive; on Safari and Firefox the jar is empty).</li>
-        <li>Same URL, same page — only top-level vs framed differs. That gap is <b>SameSite=Lax + third-party cookie rules</b>, which the removed X-Frame-Options header has nothing to do with.</li>
+        <li>DevTools → Application → Cookies → <code data-op="cookieOrigin"></code>. Clear it.</li>
+        <li>Click <b>①</b>, let it load, re-check: the cookies are there.</li>
+        <li>Clear again, click <b>②</b>, let the frame load, re-check: they are not.</li>
       </ol>
     </div>
-    <p class="muted">The iframe renders when the operator sends no X-Frame-Options / CSP (that lock is open). The cookie still fails because it is a different lock — the operator marking those cookies <code>SameSite=None; Secure</code> is the only thing that opens it.</p>
   </div>
 
   <script type="module" src="./cookie-proof.js"></script>

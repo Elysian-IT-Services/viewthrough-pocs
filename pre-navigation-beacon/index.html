@@ -8,16 +8,13 @@
 </head>
 <body>
   <h1>Pre-navigation beacon</h1>
+  <p>Whether a tracking request can finish after the reader has already left. <code>navigator.sendBeacon</code> delivers it in the background, so the link never has to be delayed or faked.</p>
 
-  <p>This POC tests whether a tracking request can finish after the reader has already left the page. It worked: <code>navigator.sendBeacon</code> hands the request to the browser, which delivers it in the background even though this page is unloading, so the link does not have to be delayed, intercepted or hidden behind a fake loading screen. It solves delivery only — the request arriving says nothing about the operator crediting anything.</p>
-
-  <h2>How to test</h2>
+  <h2>Test it</h2>
   <ol>
-    <li>This page needs <code>POST /api/track-beacon</code> on the server. If that route is missing the beacon will show as failed in step 4.</li>
-    <li>Open DevTools, go to the Network tab and tick <strong>Preserve log</strong>, or the record clears the moment you navigate and you will see nothing.</li>
-    <li>Press <strong>Leave this page</strong>. Expect the browser to go to example.com immediately, with no pause.</li>
-    <li>Come back and read the preserved Network log. Expect a <code>track-beacon</code> request of type <code>ping</code> with status 204, sent at the same moment as the navigation.</li>
-    <li>Check the terminal running the server. Expect it to have printed the beacon body.</li>
+    <li>Network tab → tick <strong>Preserve log</strong>, or the record clears on navigation and you see nothing.</li>
+    <li>Press <strong>Leave this page</strong>. The browser leaves immediately, with no pause.</li>
+    <li>Come back and read the preserved log: a <code>track-beacon</code> request of type <code>ping</code>, status 204. The server terminal prints its body.</li>
   </ol>
 
   <p><a id="leave" href="https://example.com">Leave this page</a></p>

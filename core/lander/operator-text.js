@@ -1,8 +1,8 @@
 import { activeOperator } from './storage.js';
 import { mountOperatorSwitcher } from './operator-switcher.js';
 
-// Used when we have not confirmed the real value with the operator, so a test step says "find out"
-// instead of printing a guess.
+// Used where we have not confirmed a value with the operator, so a test step says so rather than
+// printing a guess.
 const UNKNOWN = {
   landingUrl: 'the operator landing page (watch the Network tab to see where the redirect lands)',
   cookieOrigin: 'the operator domain',
@@ -48,8 +48,7 @@ export function fillOperatorText(operator) {
   }
 }
 
-// Every POC page calls this: operator switcher at the top, operator links, and every operator name,
-// host and cookie in the copy.
+// Every POC page calls this: the switcher, the operator links, and all operator copy.
 export function mountOperatorContext() {
   const operator = activeOperator();
   mountOperatorSwitcher();

@@ -8,15 +8,13 @@
 </head>
 <body>
   <h1>SameSite cookies</h1>
+  <p>Our server sets the same cookie under each SameSite policy so you can see what the browser stores. These are same-site requests, so all three are accepted — the cross-site case is the one that breaks attribution.</p>
 
-  <p>This POC asks our own server to set a cookie under <code>SameSite=Strict</code>, <code>Lax</code> and <code>None</code> in turn, so you can see exactly which attributes end up on the stored cookie. It works, but read the result carefully: these requests go to our own origin, so they are same-site and all three policies are accepted. It does not prove anything about the cross-site case, which is the one that actually breaks attribution — for that, see the banner impression POC, where the operator's cookie is rejected on a cross-site response.</p>
-
-  <h2>How to test</h2>
+  <h2>Test it</h2>
   <ol>
-    <li>Open DevTools, go to Application, then Cookies, then the entry for this origin, and delete anything named <code>tracking_id</code> so you start clean.</li>
-    <li>Press each of the three buttons in turn, re-reading the cookie list after each. Expect <code>tracking_id</code> to be stored every time, with the SameSite column changing to match the button.</li>
-    <li>Look at the <code>None</code> result specifically. It only stores because browsers treat <code>localhost</code> as secure; on a plain http host that cookie would be dropped for missing <code>Secure</code>.</li>
-    <li>Compare with the banner impression POC, where the same kind of cookie arrives on a cross-site response and the browser refuses it.</li>
+    <li>Application → Cookies → this origin. Delete <code>tracking_id</code>.</li>
+    <li>Press each button and re-read the list: <code>tracking_id</code> is stored every time, with the SameSite column changing.</li>
+    <li><code>None</code> only stores because localhost counts as secure; on plain http it would be dropped.</li>
   </ol>
 
   <p>

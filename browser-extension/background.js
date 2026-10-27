@@ -60,8 +60,8 @@ async function findCookie(operator) {
   return found ? snapshot(found) : null;
 }
 
-// The number the page POCs need: how long after opening the operator before its attribution cookie
-// actually exists. A page cannot see this for itself, so the extension measures it here.
+// How long the operator took to write its cookie — the smallest safe close delay for the page POCs,
+// which cannot measure it themselves.
 function startCookieTimer(operator, cookieBefore) {
   const startedAt = Date.now();
   const timer = { elapsedMs: null, stopped: false };

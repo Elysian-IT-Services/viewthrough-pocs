@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pop-under — the operator loads in the tab behind you</title>
+  <title>Pop-under</title>
   <link rel="stylesheet" href="/core/lander/styles.css">
 </head>
 <body>
   <h1>Pop-under</h1>
-  <p>Simulated lander. Accepting consent opens a <em>copy of this lander</em> in a new tab — the one you keep looking at — and sends <em>this</em> tab to the affiliate link, so <span data-op="label"></span> loads top-level in the tab behind you.</p>
+  <p>Accepting consent opens a copy of this lander in a new tab — the one you keep looking at — and sends <em>this</em> tab to the affiliate link, so <span data-op="label"></span> loads top-level in the tab behind you.</p>
 
   <div class="verdict">
-    <strong>The only no-operator option that stays quiet even when the browser forces tabs.</strong> Window sizing is ignored on browsers set to "prefer tabs", so a popup becomes a full-screen tab. This puts YOUR lander in the foreground tab instead and the operator behind it. Real top-level load, so <span data-op="label"></span> sets its first-party <span data-op="cookieList"></span>. <strong>Cost:</strong> the operator tab lingers — a script can only close a window it opened itself, and this tab navigated. The silent, no-tab option is the iframe, which needs <span data-op="label"></span> to set <span data-op="attributionCookie"></span> as <code>SameSite=None</code>.
+    <strong>Attributes, and works in every browser.</strong> It never asks for window features, so fullscreen and in-app browsers can't break it. Cost: the operator tab lingers, because a script can only close a window it opened itself.
   </div>
 
   <a id="banner" class="banner" data-op-link data-op="bannerCopy" target="_blank" rel="noopener" hidden></a>
@@ -23,12 +23,25 @@
     <button id="reset" type="button">Reset</button>
   </p>
 
-  <h2>Verify</h2>
+  <h2>How it works</h2>
+  <p>Six steps, all in the instant the reader clicks Accept:</p>
   <ol>
-    <li>Accept consent: a new tab opens with this lander (status says "resumed") and the original tab goes to the operator behind it.</li>
-    <li>In the original (background) tab: Network → <strong>301</strong> from <code data-op="clickHost"></code> → <code data-op="landingUrl"></code> → <strong>200</strong>. Application → Cookies → <code data-op="cookieOrigin"></code>: first-party <code data-op="cookieList"></code>.</li>
-    <li>Confirm you stayed on the lander the whole time — no full-screen operator page.</li>
-    <li><strong>Decisive test:</strong> clear the operator cookies, complete a test registration, and confirm it attributes in <span data-op="reporting"></span>.</li>
+    <li><strong>The Accept click is caught.</strong><br><span class="muted"><code>mountConsentGate({ onConsent: popUnder })</code></span></li>
+    <li><strong>We check this reader hasn't already been counted</strong>, so a second click can't fire a second affiliate click.<br><span class="muted"><code>readDeferredClick()</code></span></li>
+    <li><strong>We build the address of a copy of this page</strong> — the same URL with <code>?resumed=1</code> added, so the copy knows it is the copy.<br><span class="muted"><code>new URL(location.href)</code> · <code>searchParams.set(RESUME_PARAM, '1')</code></span></li>
+    <li><strong>We open that copy in a new tab.</strong> New tabs come to the front, so this is what the reader is now looking at — our page, unchanged.<br><span class="muted"><code>window.open(resumeUrl, '_blank')</code></span></li>
+    <li><strong>We write down that the click has fired.</strong><br><span class="muted"><code>recordDeferredClick('pop-under')</code></span></li>
+    <li><strong>We send the tab they just left to the operator.</strong> It is now the tab behind, so the operator loads out of sight while the reader carries on with us.<br><span class="muted"><code>location.replace(activeOperatorUrl())</code></span></li>
+  </ol>
+
+  <p class="muted"><strong>Two things that matter:</strong> all of it has to happen on the click itself — wait even a moment and the browser treats the new tab as a popup and blocks it. And the last step <em>replaces</em> the page rather than adding to history, so the Back button never takes the reader into the operator's site.</p>
+
+  <h2>Test it</h2>
+  <ol>
+    <li>Clear <code data-op="cookieOrigin"></code> in Application → Cookies.</li>
+    <li>Accept consent. A new tab opens with this lander (log says <code>resumed</code>) and the tab you were on goes to the operator behind it.</li>
+    <li>In that background tab: Network shows <strong>301</strong> from <code data-op="clickHost"></code> → <code data-op="landingUrl"></code> → <strong>200</strong>.</li>
+    <li>Check <code data-op="cookieOrigin"></code>: <code data-op="cookieList"></code> should be there, first-party.</li>
   </ol>
 
   <div id="consent" class="consent">

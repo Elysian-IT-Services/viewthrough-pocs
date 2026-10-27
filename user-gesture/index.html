@@ -8,15 +8,12 @@
 </head>
 <body>
   <h1>User gesture</h1>
+  <p>How long a click keeps the right to open a window. This is why every pop-under opens its window first and asks questions afterwards.</p>
 
-  <p>This POC tests how long a click keeps the right to open a window. It worked: calling <code>window.open</code> straight away inside the click handler is allowed, and the same call made a second and a half later is blocked by the popup blocker, because the activation the click granted has already expired. Every pop-under POC in this repo depends on that first case, which is why they all open the window before doing anything else.</p>
-
-  <h2>How to test</h2>
+  <h2>Test it</h2>
   <ol>
-    <li>Press <strong>Open immediately</strong>. Expect a small window on example.com and the log below to say the window opened.</li>
-    <li>Close that window and press <strong>Open after a delay</strong>. Expect no window, and the log to say the popup blocker stopped it.</li>
-    <li>Look at the browser's address bar for the blocked-popup icon. Chrome and Firefox both show one after the second test.</li>
-    <li>If your browser allowed the delayed window too, check whether you have popups allowed for localhost, then try again in a fresh profile.</li>
+    <li><strong>Open immediately</strong> — the window opens.</li>
+    <li>Close it, then <strong>Open after a delay</strong> — the popup blocker stops it, and the address bar shows the blocked-popup icon.</li>
   </ol>
 
   <p>

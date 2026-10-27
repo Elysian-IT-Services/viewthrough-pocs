@@ -8,15 +8,12 @@
 </head>
 <body>
   <h1>Opener isolation</h1>
+  <p>What a new tab can still do to the tab that opened it. <code>rel="noopener"</code> cuts the handle — the same handle the pop-unders rely on.</p>
 
-  <p>This POC tests what a page you open in a new tab can do to the tab that opened it. It worked and the result is the one the standard promises: a plain <code>target="_blank"</code> link hands the new tab a live <code>window.opener</code> handle it can use to navigate this page somewhere else, and adding <code>rel="noopener"</code> sets that handle to <code>null</code>. That handle is also what the pop-under POCs need, so turning it off is not free.</p>
-
-  <h2>How to test</h2>
+  <h2>Test it</h2>
   <ol>
-    <li>Press <strong>Open without noopener</strong>. The new tab reports that <code>window.opener</code> is live.</li>
-    <li>Switch back to this tab. Expect it to have been navigated away to a page you did not ask for, which is the whole attack.</li>
-    <li>Come back here with the browser's back button, then press <strong>Open with noopener</strong>. The new tab reports that <code>window.opener</code> is null.</li>
-    <li>Switch back to this tab again. Expect it to be untouched, still showing this text.</li>
+    <li>Press <strong>Open without noopener</strong>: the new tab reports a live <code>window.opener</code> and navigates this tab away.</li>
+    <li>Come back, press <strong>Open with noopener</strong>: the new tab reports <code>null</code> and this tab is untouched.</li>
   </ol>
 
   <p><a href="./target.html" target="_blank">Open without noopener</a></p>

@@ -1,5 +1,5 @@
 import { POPUP_SIZE_PX, POPUP_CLOSE_AFTER_OPEN_MS } from '/core/constants/index.js';
-import { createReporter, mountConsentGate, recordDeferredClick, openCornerWindow, closeWindowAfterDelay, activeOperatorUrl } from '/core/lander/index.js';
+import { createReporter, mountConsentGate, recordDeferredClick, openCornerWindow, closeWindowAfterDelay, activeOperator } from '/core/lander/index.js';
 
 const report = createReporter(document.getElementById('status'));
 
@@ -12,11 +12,13 @@ for (const element of document.querySelectorAll('[data-popup-size]')) {
 
 // The window has to open inside the consent click or the browser blocks it as a popup.
 function popOver() {
-  const popupWindow = openCornerWindow(activeOperatorUrl(), report);
+  const operator = activeOperator();
+  const popupWindow = openCornerWindow(operator.url, report);
   if (!popupWindow) return;
 
+  const delayMs = Number(delayInput.value);
   recordDeferredClick('pop-over');
-  closeWindowAfterDelay(popupWindow, report, Number(delayInput.value));
+  closeWindowAfterDelay(popupWindow, report, delayMs);
 }
 
 mountConsentGate({ onConsent: popOver, report });

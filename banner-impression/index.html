@@ -8,17 +8,18 @@
 </head>
 <body>
   <h1>Banner impression</h1>
+  <p>Loads <span data-op="label"></span>'s real creative from their CDN, so the impression comes from the reader's browser instead of our server.</p>
 
-  <p>This POC loads <span data-op="label"></span>'s real creative straight from their CDN, so the impression is requested by the reader's browser instead of by our server. It half worked: impressions were counted, but they landed under <code>Default</code> rather than our source, the cookie on the response was rejected, and nothing ties the person who saw the banner to a registration later on.</p>
+  <div class="verdict warn">
+    <strong>Set aside.</strong> Impressions were counted, but under <code>Default</code> rather than our source, the cookie on the response was rejected cross-site, and no impression was ever linked to a registration.
+  </div>
 
-  <h2>How to test</h2>
+  <h2>Test it</h2>
   <ol>
-    <li>Open DevTools, go to the Network tab, tick <strong>Disable cache</strong>, then reload this page. A cached image makes no request, so nothing gets counted.</li>
-    <li>Find the request to <code id="creativeHost"></code> in the Network list. Expect status 200.</li>
-    <li>Open that request's <strong>Cookies</strong> tab. Expect a cookie named after the creative id to be listed as blocked — the response carries no <code>SameSite=None; Secure</code>, so the browser drops it on a cross-site image.</li>
-    <li>Open <span data-op="reporting"></span>, find the Media Report and read the <strong>Impressions</strong> column, not Visitors. Expect the count to rise under <code>Default</code>, not under our source.</li>
-    <li>Register a test account afterwards and look for it in the Registrations Report. Expect nothing: no impression was ever linked to a person.</li>
-    <li>Do not click the banner. A click fires the visit URL and adds a second attribution path, which ruins the result.</li>
+    <li>Network tab → tick <strong>Disable cache</strong> → reload. A cached image makes no request.</li>
+    <li>Find the request to <code id="creativeHost"></code>. Expect 200, and its cookie listed as blocked.</li>
+    <li>In <span data-op="reporting"></span>, watch Impressions rise under <code>Default</code>, not under our source.</li>
+    <li>Do not click the banner — a click adds a second attribution path and ruins the result.</li>
   </ol>
 
   <p><a id="click-through" target="_blank" rel="noopener"><img id="creative" alt="Operator creative" width="800" height="440"></a></p>

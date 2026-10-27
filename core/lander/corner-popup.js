@@ -1,4 +1,4 @@
-import { POPUP_SIZE_PX, POPUP_CLOSE_AFTER_OPEN_MS, POPUP_CLOSE_CHECK_MS } from '../constants/index.js';
+import { POPUP_SIZE_PX, POPUP_CLOSE_AFTER_OPEN_MS, POPUP_CLOSE_CHECK_MS, FOCUS_RETRY_MS } from '../constants/index.js';
 
 function cornerPosition() {
   const screenWidth = screen.availWidth || screen.width;
@@ -6,9 +6,19 @@ function cornerPosition() {
   return { left: Math.max(0, screenWidth - POPUP_SIZE_PX), top: Math.max(0, screenHeight - POPUP_SIZE_PX) };
 }
 
-// A window is its own top-level page, not a frame, so the operator writes its SameSite=Lax cookies
-// exactly as it would in a normal tab. The small corner size is what keeps it out of the way;
-// nothing here touches focus, because a backgrounded window gets its timers throttled.
+// Chrome ignores blur() on a window it just opened, but usually honours focus() on the opener.
+function returnFocusToLander(popupWindow) {
+  try {
+    popupWindow.blur();
+    window.focus();
+    setTimeout(() => window.focus(), FOCUS_RETRY_MS);
+  } catch {
+    // The browser kept focus on the new window.
+  }
+}
+
+// A window is top-level, not a frame, so the operator writes its SameSite=Lax cookies as it would
+// in a normal tab. That is the whole reason this attributes and the iframe POC does not.
 export function openCornerWindow(url, report) {
   const { left, top } = cornerPosition();
   const features = `popup=yes,width=${POPUP_SIZE_PX},height=${POPUP_SIZE_PX},left=${left},top=${top}`;
@@ -19,8 +29,7 @@ export function openCornerWindow(url, report) {
     return null;
   }
 
-  // Size and position are best effort: browsers clamp or ignore them, and phones ignore them
-  // entirely and open a full tab.
+  // Best effort: browsers clamp these, and fullscreen or in-app browsers open a full tab instead.
   try {
     popupWindow.resizeTo(POPUP_SIZE_PX, POPUP_SIZE_PX);
     popupWindow.moveTo(left, top);
@@ -28,12 +37,15 @@ export function openCornerWindow(url, report) {
     // Clamped by the browser.
   }
 
-  report('fired', `Opened ${url} in a ${POPUP_SIZE_PX}px window at the bottom-right.`);
+  returnFocusToLander(popupWindow);
+
+  report('fired', `Opened ${url} in a ${POPUP_SIZE_PX}px window at the bottom-right, focus handed back to the lander.`);
   return popupWindow;
 }
 
 function closeAndVerify(popupWindow, report, openedAt) {
   popupWindow.close();
+  window.focus();
   setTimeout(() => {
     const elapsed = Date.now() - openedAt;
     if (popupWindow.closed) {

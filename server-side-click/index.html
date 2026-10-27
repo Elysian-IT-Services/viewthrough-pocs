@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Server-side click + second half</title>
+  <title>Server-side click</title>
   <link rel="stylesheet" href="/core/lander/styles.css">
 </head>
 <body>
-  <h1>Server-side click + second half</h1>
-  <p>Simulated lander. Accept consent, then click the banner. <strong>First half:</strong> your browser asks our server to invoke the affiliate link; the server mints the tagged <code data-op="landingUrl"></code> URL. <strong>Second half:</strong> the page loads that captured URL in the same auto-closing corner window as the pop-over, so the cookies land in the <em>user's</em> browser.</p>
+  <h1>Server-side click</h1>
+  <p>Accept consent, then click the banner. Our server calls the affiliate link and mints the tagged landing URL; the page then loads that URL in an auto-closing corner window, so the cookies land in the <em>reader's</em> browser.</p>
 
   <div class="verdict warn">
-    <strong>Trade-off to verify:</strong> the <em>click</em> is logged from our server's IP (the server-side GET), while the <em>cookies</em> are set from the user's browser (the second-half window). That IP split can be filtered by the operator's bot layer. The two pop-unders do everything from the user's IP and are likely cleaner — use this one only if minting server-side buys you something, such as a guaranteed click log even when the popup is blocked. Confirm attribution in <span data-op="reporting"></span>.
+    <strong>Attributes, with a catch.</strong> The click is logged from our server's IP while the cookies are set from the reader's, and that split can be filtered by the operator's bot layer. Useful mainly because the mint still happens when the popup is blocked.
   </div>
 
   <a id="banner" class="banner" data-op-link data-op="bannerCopy" hidden></a>
@@ -22,12 +22,12 @@
   <pre id="status" role="status" aria-live="polite">Ready. Nothing has fired.</pre>
   <p><button id="reset" type="button">Reset</button></p>
 
-  <h2>What to check</h2>
+  <h2>Test it</h2>
   <ol>
-    <li>Pill: <strong>“minting the referral…”</strong> → <strong>“minted server-side + loaded in-browser.”</strong> The result panel shows the captured link parameters.</li>
-    <li>A corner window opens on the captured operator URL and closes itself. Before it closes: Application → Cookies → <code data-op="cookieOrigin"></code> shows first-party <code data-op="cookieList"></code> (the second half worked).</li>
-    <li>If the popup was blocked, use the manual button in the result panel; the first-half mint still happened.</li>
-    <li><strong>Decisive test:</strong> register a test account afterwards and confirm it attributes in <span data-op="reporting"></span> — and that the server-IP click plus browser-IP cookies did not get filtered.</li>
+    <li>Clear <code data-op="cookieOrigin"></code> in Application → Cookies, then accept consent and click the banner.</li>
+    <li>The result panel shows the captured link parameters and the minted URL.</li>
+    <li>A corner window opens on that URL and closes itself. Check <code data-op="cookieOrigin"></code> for <code data-op="cookieList"></code>.</li>
+    <li>If the popup was blocked, use the manual link in the panel — the server-side mint already happened.</li>
   </ol>
 
   <div id="consent" class="consent">
